@@ -1,0 +1,237 @@
+CreateCollection({ name: "taxes" });
+
+CreateIndex({
+  name: "taxes_by_name",
+  unique: false,
+  serialized: true,
+  source: Collection("taxes"),
+  terms: [
+    {
+      field: ["data", "name"]
+    }
+  ]
+});
+
+Create(Collection("taxes"), {
+  data: {
+    name: "NHIF",
+    bracket: [
+      5999,
+      7999,
+      11999,
+      14999,
+      19999,
+      24999,
+      29999,
+      34999,
+      39999,
+      44999,
+      49999,
+      59999,
+      69999,
+      79999,
+      89999,
+      99999,
+      99999999
+    ],
+    tax: [
+      150,
+      300,
+      400,
+      500,
+      600,
+      750,
+      850,
+      900,
+      950,
+      1000,
+      1100,
+      1200,
+      1300,
+      1400,
+      1500,
+      1600,
+      1700
+    ],
+    date: Date("2021-01-01")
+  }
+});
+
+Create(Collection("taxes"), {
+  data: {
+    "name": "PAYE",
+    "bracket": [
+      24000,
+      32333,
+      999999999
+    ],
+    "tax": [
+      0.1,
+      0.25,
+      0.3
+    ],
+    "computed": [
+      2400,
+      2083.25
+    ],
+    "relief": 2400,
+    "date": Date("2021-01-01")
+  }
+});
+
+CreateFunction({
+  name: "calcBulkTaxes",
+  role: null,
+  body: Query(
+    Lambda(
+      "bulkList",
+      Map(
+        Var("bulkList"),
+        Lambda(
+          "item",
+          Let(
+            {
+              id: Select("id", Var("item")),
+              grossSalary: Select("grossSalary", Var("item"))
+            },
+            {
+              id: Var("id"),
+              taxes: Call(Function("calcTaxes"), Var("grossSalary"))
+            }
+          )
+        )
+      )
+    )
+  )
+});
+
+CreateFunction({
+  name: "calcNhif",
+  role: null,
+  body: Query(
+    Lambda(
+      "salary",
+      Map(
+        Paginate(Match(Index("taxes_by_name"), "NHIF")),
+        Lambda(
+          "tax",
+          Let(
+            {
+              taxDoc: Get(Var("tax")),
+              brackets: Select(["data", "bracket"], Var("taxDoc")),
+              taxes: Select(["data", "tax"], Var("taxDoc")),
+              filteredBrackets: Filter(
+                Var("brackets"),
+                Lambda("brack", GT(Var("salary"), Var("brack")))
+              ),
+              arrayIndex: Count(Var("filteredBrackets"))
+            },
+            Select(Var("arrayIndex"), Var("taxes"))
+          )
+        )
+      )
+    )
+  )
+});
+
+CreateFunction({
+  name: "calcNssf",
+  role: null,
+  body: Query(
+    Lambda("salary", 
+      Min(Multiply(Var("salary"), 0.05), 200)
+    )
+  )
+});
+
+CreateFunction({
+  name: "calcPaye",
+  role: null,
+  body: Query(
+    Lambda(
+      "taxableSalary",
+      If(
+        LTE(Var("taxableSalary"), 24000),
+        { data: [0] },
+        Map(
+          Paginate(Match(Index("taxes_by_name"), "PAYE")),
+          Lambda(
+            "tax",
+            Let(
+              {
+                taxDoc: Get(Var("tax")),
+                bracket: Select(["data", "bracket"], Var("taxDoc")),
+                rates: Select(["data", "tax"], Var("taxDoc")),
+                computed: Select(["data", "computed"], Var("taxDoc")),
+                relief: Select(["data", "relief"], Var("taxDoc")),
+                filteredBracket: Filter(
+                  Var("bracket"),
+                  Lambda("brack", GT(Var("taxableSalary"), Var("brack")))
+                ),
+                filteredBracketCount: Count(Var("filteredBracket")),
+                lastRate: Select(Var("filteredBracketCount"), Var("rates")),
+                excess: Subtract(
+                  Var("taxableSalary"),
+                  Select(
+                    Subtract(Var("filteredBracketCount"), 1),
+                    Var("bracket")
+                  )
+                ),
+                excessTax: Multiply(Var("excess"), Var("lastRate")),
+                actualComputed: Take(
+                  Var("filteredBracketCount"),
+                  Var("computed")
+                ),
+                actualComputedTax: Reduce(
+                  Lambda(["acc", "val"], Add(Var("acc"), Var("val"))),
+                  0,
+                  Var("actualComputed")
+                ),
+                result: Round(
+                  Subtract(
+                    Add(Var("excessTax"), Var("actualComputedTax")),
+                    Var("relief")
+                  )
+                )
+              },
+              If(LTE(Var("result"), 0), { data: [0] }, Var("result"))
+            )
+          )
+        )
+      )
+    )
+  )
+});
+
+CreateFunction({
+  name: "calcTaxes",
+  role: null,
+  body: Query(
+    Lambda(
+      "grossSalary",
+      Let(
+        {
+          nssf: Call(Function("calcNssf"), Var("grossSalary")),
+          nhif: Call(Function("calcNhif"), Var("grossSalary")),
+          taxableSalary: Subtract(Var("grossSalary"), Var("nssf")),
+          paye: Call(Function("calcPaye"), Var("taxableSalary")),
+          nhifRelief: Multiply(Select(["data", 0], Var("nhif")), 0.15),
+          payeLessNhifRelief: Subtract(
+            Select(["data", 0], Var("paye")),
+            Var("nhifRelief")
+          )
+        },
+        {
+          taxableSalary: Var("taxableSalary"),
+          paye: If(
+            LTE(Var("payeLessNhifRelief"), 0),
+            0,
+            Var("payeLessNhifRelief")
+          ),
+          nhif: Select(["data", 0], Var("nhif")),
+          nssf: Var("nssf")
+        }
+      )
+    )
+  )
+});

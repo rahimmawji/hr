@@ -1,0 +1,190 @@
+[
+  {
+    "personal": {
+      "firstName": "Ismail",
+      "middleName": "",
+      "lastName": "Mawji",
+      "dateOfBirth": "1961-01-26",
+      "telephone": "0711222333",
+      "email": "i@email.com"
+    },
+    "statutory": {
+      "id": "123123123",
+      "pin": "",
+      "nhif": null,
+      "nssf": null
+    },
+    "position": "Director",
+    "salary": {
+      "basic": 300000,
+      "allowances": [
+        {
+          "name": "Housing",
+          "amount": 20000
+        }
+      ],
+      "date": "2022-01-01"
+    },
+    "start": "2022-01-01",
+    "end": null,
+    "active": "TRUE",
+    "casual": "FALSE",
+    "leave": 0
+  },
+  {
+    "personal": {
+      "firstName": "Nazira",
+      "middleName": "",
+      "lastName": "Mawji",
+      "dateOfBirth": "1963-04-26",
+      "telephone": "0722111222",
+      "email": "n@email.com"
+    },
+    "statutory": {
+      "id": "213213213",
+      "pin": "A321654987S",
+      "nhif": null,
+      "nssf": null
+    },
+    "position": "Director",
+    "salary": {
+      "basic": 300000,
+      "date": "2022-01-01"
+    },
+    "start": "2022-01-01",
+    "end": null,
+    "active": "TRUE",
+    "casual": "FALSE",
+    "leave": 0
+  },
+  {
+    "personal": {
+      "firstName": "Rahim",
+      "middleName": "",
+      "lastName": "Mawji",
+      "dateOfBirth": "1982-08-03",
+      "telephone": "0733111555",
+      "email": "r@email.com"
+    },
+    "statutory": {
+      "id": "445556668",
+      "pin": "A896321684F",
+      "nhif": null,
+      "nssf": null
+    },
+    "position": "Manager",
+    "salary": {
+      "basic": 300000,
+      "date": "2022-01-01"
+    },
+    "start": "2022-01-01",
+    "end": null,
+    "active": "TRUE",
+    "casual": "FALSE",
+    "leave": 0
+  },
+  {
+    "personal": {
+      "firstName": "Gladys",
+      "middleName": "",
+      "lastName": "Mwashuke",
+      "dateOfBirth": "1978-04-25",
+      "telephone": "0722888666",
+      "email": "g@email.com"
+    },
+    "statutory": {
+      "id": "987632416",
+      "pin": "",
+      "nhif": null,
+      "nssf": null
+    },
+    "position": "Accountant",
+    "salary": {
+      "basic": 100000,
+      "date": "2022-01-01"
+    },
+    "start": "2022-01-01",
+    "end": null,
+    "active": "TRUE",
+    "casual": "FALSE",
+    "leave": 0
+  },
+  {
+    "personal": {
+      "firstName": "Joseph",
+      "middleName": "Ngugi",
+      "lastName": "Muhia",
+      "dateOfBirth": "1970-01-31",
+      "telephone": "0710555666",
+      "email": "j@email.com"
+    },
+    "statutory": {
+      "id": "983168699",
+      "pin": "",
+      "nhif": null,
+      "nssf": null
+    },
+    "position": "Driver",
+    "salary": {
+      "basic": 24000,
+      "date": "2022-01-01"
+    },
+    "start": "2022-01-01",
+    "end": null,
+    "active": "TRUE",
+    "casual": "FALSE",
+    "leave": 0
+  },
+  {
+    "personal": {
+      "firstName": "John",
+      "middleName": "David",
+      "lastName": "Nzioka",
+      "dateOfBirth": "1980-09-25",
+      "telephone": "0720889669",
+      "email": "d@email.com"
+    },
+    "statutory": {
+      "id": "321564388",
+      "pin": "",
+      "nhif": null,
+      "nssf": null
+    },
+    "position": "Cleaner",
+    "salary": {
+      "basic": 20000,
+      "date": "2022-01-01"
+    },
+    "start": "2022-01-01",
+    "end": null,
+    "active": "TRUE",
+    "casual": "FALSE",
+    "leave": 0
+  },
+  {
+    "personal": {
+      "firstName": "Daniel",
+      "middleName": "Odhiambo",
+      "lastName": "Juma",
+      "dateOfBirth": "1972-10-15",
+      "telephone": "0711666444",
+      "email": "da@email.com"
+    },
+    "statutory": {
+      "id": "896354132",
+      "pin": "",
+      "nhif": null,
+      "nssf": null
+    },
+    "position": "Accountant",
+    "salary": {
+      "basic": 22000,
+      "date": "2022-01-01"
+    },
+    "start": "2022-01-01",
+    "end": null,
+    "active": "TRUE",
+    "casual": "FALSE",
+    "leave": 0
+  }
+]

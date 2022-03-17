@@ -1,0 +1,102 @@
+type Globals {
+  employeeNo: Int!
+}
+
+type Department {
+  name: String!
+  active: Boolean!
+  employees: [Employee!] @relation
+}
+
+type Leave {
+  employee: Employee!
+  start: Date!
+  end: Date!
+  type: String!
+  active: Boolean!
+}
+
+type Loan {
+  employee: Employee!
+  start: Date!
+  end: Date!
+  repayment: Float!
+  interest: Float
+  active: Boolean!
+}
+
+type Employee {
+  personal: PersonalDetail!
+  statutory: StatutoryDetail!
+  position: String!
+  department: Department
+  salary: Salary!
+  bank: BankDetail
+  start: Date!
+  end: Date
+  active: Boolean!
+  casual: Boolean!
+  leave: Int!
+  leaveHistory: [Leave!] @relation
+  loan: Float
+  loanHistory: [Loan!] @relation
+}
+
+type PersonalDetail @embedded {
+  firstName: String!
+  middleName: String
+  lastName: String!
+  address: Address
+  dateOfBirth: Date!
+  telephone: String!
+  email: String!
+}
+
+type StatutoryDetail @embedded {
+  id: String!
+  pin: String
+  nhif: String
+  nssf: String
+}
+
+type Address @embedded {
+  number: String
+  street: String
+  city: String
+  pobox: String
+  code: String
+  country: String
+}
+
+type Allowance @embedded {
+  name: String!
+  amount: Float!
+}
+
+type Salary @embedded {
+  basic: Float!
+  allowances: [Allowance]
+  date: Date!
+}
+
+type BankDetail @embedded {
+  accountName: String!
+  accountNumber: String!
+  bank: String!
+  bankCode: String!
+  branch: String!
+  branchCode: String!
+}
+
+type Query {
+  allEmployees: [Employee!]
+  activeEmployees(active: Boolean!): [Employee!]
+  allDepartments: [Department!]
+  activeDepartments(active: Boolean!): [Department!]
+  allLeaves: [Leave!]
+  activeLeaves(active: Boolean!): [Leave!]
+  allLoans: [Loan!]
+  activeLoans(active: Boolean!): [Loan!]
+  allAllowances: [Allowance!]
+  nextEmployeeNo: Int! @resolver(name: "getNextEmployeeNo")
+}

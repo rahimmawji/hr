@@ -1,0 +1,1 @@
+Query(Lambda("salary", Min(Multiply(Var("salary"), 0.05), 200)))
