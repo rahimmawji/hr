@@ -8,8 +8,8 @@
           <v-tab>Statutory</v-tab>
           <v-tab>Salary</v-tab>
           <v-tab>Banking</v-tab>
-          <v-tab>Leave</v-tab>
-          <v-tab>Loans</v-tab>
+          <v-tab disabled>Leave</v-tab>
+          <v-tab disabled>Loans</v-tab>
           <v-tabs-items v-model="tab">
             <v-tab-item class="mt-4">
               <personal />
@@ -23,8 +23,8 @@
             <v-tab-item class="mt-4">
               <banking />
             </v-tab-item>
-            <v-tab-item class="mt-4">Leave</v-tab-item>
-            <v-tab-item class="mt-4">Loans</v-tab-item>
+            <v-tab-item class="mt-4">TODO: Leave</v-tab-item>
+            <v-tab-item class="mt-4">TODO: Loans</v-tab-item>
           </v-tabs-items>
         </v-tabs>
       </template>
@@ -44,7 +44,7 @@
       <li>nhif</li>
       <li>nssf</li>
     </ul> -->
-    <ul>
+    <!-- <ul>
       <li>position*</li>
     </ul>
     <ul>
@@ -54,17 +54,17 @@
       <li>basic*</li>
       <li>allowances: [{ name, amount }]</li>
       <li>date*</li>
-    </ul>
+    </ul> -->
     <!-- <ul>
       <li>bank</li>
     </ul> -->
-    <ul>
+    <!-- <ul>
       <li>start*</li>
       <li>end*</li>
       <li>active*</li>
       <li>casual*</li>
       <li>leave*</li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 

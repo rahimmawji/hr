@@ -1,0 +1,45 @@
+query allEmployees{
+  allEmployees{
+    data{
+      _id
+      personal{
+        firstName
+      }
+    }
+  }
+}
+
+query findEmployeeById($id: String!) {
+  findEmployeeByID(id: $id){
+    personal{
+      firstName
+      middleName
+      lastName
+      address
+      dateOfBirth
+      telephone
+      email
+    }
+    statutory {
+      id
+      pin
+      nhif
+      nssf
+    }
+    department{
+      name
+    }
+    salary
+    bank{
+      accountName
+      accountNumber
+      bank
+      bankCode
+      branch
+      branchCode
+    }
+    start
+    leave
+    loan
+  }
+}

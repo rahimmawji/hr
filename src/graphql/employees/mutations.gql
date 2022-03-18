@@ -1,0 +1,11 @@
+mutation createEmployee ($employeeData: EmployeeInput!) {
+  createEmployee(data: $employeeData){
+    _id
+  }
+}
+
+mutation createSalary ($salaryData: SalaryInput!) {
+  createSalary(data: $salaryData) {
+    _id
+  }
+}

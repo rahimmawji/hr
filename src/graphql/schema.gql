@@ -8,6 +8,21 @@ type Department {
   employees: [Employee!] @relation
 }
 
+type Salary {
+  employee: Employee!
+  position: String!
+  basic: Float!
+  allowances: [Allowance]
+  gross: Float!
+  date: Date!
+  active: Boolean!
+}
+
+type Allowance @embedded {
+  name: String!
+  amount: Float!
+}
+
 type Leave {
   employee: Employee!
   start: Date!
@@ -28,9 +43,9 @@ type Loan {
 type Employee {
   personal: PersonalDetail!
   statutory: StatutoryDetail!
-  position: String!
   department: Department
-  salary: Salary!
+  salary: Float!
+  salaryHistory: [Salary!] @relation
   bank: BankDetail
   start: Date!
   end: Date
@@ -47,7 +62,7 @@ type PersonalDetail @embedded {
   middleName: String
   lastName: String!
   address: Address
-  dateOfBirth: Date!
+  dateOfBirth: Date
   telephone: String!
   email: String
 }
@@ -68,17 +83,6 @@ type Address @embedded {
   country: String
 }
 
-type Allowance @embedded {
-  name: String!
-  amount: Float!
-}
-
-type Salary @embedded {
-  basic: Float!
-  allowances: [Allowance]
-  date: Date!
-}
-
 type BankDetail @embedded {
   accountName: String!
   accountNumber: String!
@@ -97,6 +101,5 @@ type Query {
   activeLeaves(active: Boolean!): [Leave!]
   allLoans: [Loan!]
   activeLoans(active: Boolean!): [Loan!]
-  allAllowances: [Allowance!]
   nextEmployeeNo: Int! @resolver(name: "getNextEmployeeNo")
 }
