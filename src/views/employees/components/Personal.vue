@@ -135,27 +135,39 @@
     <div class="text-right">
       <v-btn
         :color="edit ? 'success' : 'warning'"
-        @click="edit = !edit"
+        @click="editSave"
         v-html="edit ? 'Save' : 'Edit'"
+        :loading="loadingSave"
       />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   data: () => ({
     edit: false,
+    loadingSave: false
   }),
   computed: {
     ...mapGetters("employees", ["personal"]),
   },
   methods: {
     ...mapMutations("employees", ["UPDATE_EMPLOYEE_DETAIL"]),
+    ...mapActions("employees", ["updateEmployeeById"]),
     update(category, subcategory, property, value) {
       this.UPDATE_EMPLOYEE_DETAIL({ category, subcategory, property, value });
     },
+    async editSave () {
+      if (!this.edit) this.edit = true
+      else {
+        this.loadingSave = true
+        await this.updateEmployeeById("personal")
+        this.loadingSave = false
+        this.edit = false
+      }
+    }
   },
 };
 </script>

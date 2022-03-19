@@ -1,21 +1,38 @@
-query allEmployees{
-  allEmployees{
-    data{
+query activeEmployees {
+  activeEmployees(active: true) {
+    data {
       _id
-      personal{
+      personal {
         firstName
+        lastName
+      }
+      department{
+        name
+      }
+      salaryHistory{
+        data{
+          position
+        }
       }
     }
   }
 }
 
-query findEmployeeById($id: String!) {
-  findEmployeeByID(id: $id){
-    personal{
+query findEmployeeByID($id: ID!) {
+  findEmployeeByID(id: $id) {
+    _id
+    personal {
       firstName
       middleName
       lastName
-      address
+      address {
+        number
+        street
+        city
+        pobox
+        code
+        country
+      }
       dateOfBirth
       telephone
       email
@@ -26,11 +43,24 @@ query findEmployeeById($id: String!) {
       nhif
       nssf
     }
-    department{
+    department {
       name
     }
     salary
-    bank{
+    salaryHistory {
+      data {
+        date
+        position
+        allowances {
+          name
+          amount
+        }
+        basic
+        gross
+        active
+      }
+    }
+    bank {
       accountName
       accountNumber
       bank
@@ -41,5 +71,6 @@ query findEmployeeById($id: String!) {
     start
     leave
     loan
+    active
   }
 }

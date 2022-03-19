@@ -2,35 +2,39 @@
   <div>
     <v-row>
       <v-col>
-        <h4 class="mb-1">Employment</h4>
-        <v-text-field outlined label="Position" v-model="salary.position" />
-        <v-text-field outlined label="Department" v-model="salary.department" />
-      </v-col>
-      <v-col>
-        <h4 class="mb-1">Salary History</h4>
-        <v-card outlined>
-          Date: 
-          Basic: {{ salary.basic }}
-          Allowances: 
-          Gross Sal
-        </v-card>
-      </v-col>
-      <v-col>
-        <v-text-field outlined label="Basic salary" v-model="salary.basic" />
-        <v-row>
-          <v-col>
-            <v-text-field
-              outlined
-              label="Allowance"
-              v-model="salary.allowance"
-            />
-          </v-col>
-          <v-col>
-            <v-text-field outlined label="Amount" v-model="salary.amount" />
-          </v-col>
-        </v-row>
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th colspan="4"></th>
+                <th class="text-center" colspan="2">Allowances</th>
+                <th></th>
+              </tr>
+              <tr>
+                <th>Date</th>
+                <th>Position</th>
+                <th>Department</th>
+                <th class="text-right">Basic</th>
+                <th class="text-right" style="border-left: 1px solid lightGrey;">Housing</th>
+                <th class="text-right">Telephone</th>
+                <th class="text-right" style="border-left: 1px solid lightGrey;">Gross</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(sal, index) in salary" :key="index">
+                <td>{{ sal.date }}</td>
+                <td>{{ sal.position }}</td>
+                <td>{{ sal.department }}</td>
+                <td class="text-right">{{ sal.basic }}</td>
+                <td class="text-right" style="border-left: 1px solid lightGrey;"></td>
+                <td class="text-right"></td>
+                <td class="text-right" style="border-left: 1px solid lightGrey;">{{ sal.gross }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
         <div class="text-center">
-          <v-btn text>Add allowance</v-btn>
+          <v-btn text>Change salary</v-btn>
         </div>
       </v-col>
     </v-row>
@@ -41,23 +45,6 @@
         v-html="edit ? 'Save' : 'Edit'"
       />
     </div>
-    <!-- TODO: Add Salary history -->
-    <!-- <v-row>
-      <v-col>
-        <h4>Salary history</h4>
-        <v-simple-table>
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Basic</th>
-                <th>Allowances</th>
-              </tr>
-            </thead>
-          </template>
-        </v-simple-table>
-      </v-col>
-    </v-row> -->
   </div>
 </template>
 

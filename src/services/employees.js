@@ -1,6 +1,6 @@
 import { apolloClient } from "../vue-apollo";
-import { createEmployee, createSalary } from '@/graphql/employees/mutations.gql'
-import { allEmployees, findEmployeeById } from '@/graphql/employees/queries.gql'
+import { createEmployee, createSalary, partialUpdateEmployee } from '@/graphql/employees/mutations.gql'
+import { activeEmployees, findEmployeeByID } from '@/graphql/employees/queries.gql'
 
 export const EmployeeService = {
   async createEmployee (employeeData) {
@@ -16,16 +16,39 @@ export const EmployeeService = {
       variables: { salaryData }
     })
   },
-  async getAllEmployees() {
-    const result = await apolloClient.query({
-      query: allEmployees
-    })
-    return result
+  async getAllActiveEmployees() {
+    try {
+      const result = await apolloClient.query({
+        query: activeEmployees
+      })
+      return result.data.activeEmployees.data
+    } catch (error) {
+      console.log('Error in EmployeeService: getEmployeeById:', error)
+      throw error
+    }
   },
   async getEmployeeById(id) {
-    return await apolloClient.query({
-      query: findEmployeeById,
-      variables: { id }
-    })
+    try {
+      const result = await apolloClient.query({
+        query: findEmployeeByID,
+        variables: { id }
+      })
+      return result.data.findEmployeeByID
+    } catch (error) {
+      console.log('Error in EmployeeService: getEmployeeById:', error)
+      throw error
+    }
+  },
+  async partialUpdateEmployee (id, employeeData) {
+    try {
+      const result = await apolloClient.mutate({
+        mutation: partialUpdateEmployee,
+        variables: { id, employeeData }
+      })
+      return result.data.partialUpdateEmployee
+    } catch (error) {
+      console.log('Error in EmployeeService: partialUpdateEmployee:', error)
+      throw error
+    }
   }
 }

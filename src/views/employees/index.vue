@@ -7,19 +7,27 @@
             Employees
             <v-spacer />
             <v-text-field
-              label="Search"
+              outlined
+              label="Search employees"
+              v-model="search"
               prepend-inner-icon="mdi-magnify"
               hide-details
             />
-            <v-spacer />
-            <v-btn color="primary" @click="drawer = true">
+            <!-- <v-spacer /> -->
+            <v-btn color="primary" class="ml-6" @click="drawer = true">
               <v-icon left>mdi-plus</v-icon>
               New employee
             </v-btn>
           </v-card-title>
           <v-card-text>
             <v-divider class="mb-2" />
-            <v-data-table />
+            <v-data-table
+              :items="allEmployees"
+              :headers="headers"
+              :search="search"
+              @click:row="selectEmployee"
+              :loading="loadingEmployees"
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -42,27 +50,76 @@
           >
             <v-row class="pa-4">
               <v-col>
-                <v-text-field outlined label="First name" v-model="employee.personal.firstName" :rules="required" />
-                <v-text-field outlined label="ID Number" v-model="employee.statutory.id" :rules="required" />
-                <v-text-field outlined label="Position" v-model="salary.position" :rules="required" />
+                <v-text-field
+                  outlined
+                  label="First name"
+                  v-model="employee.personal.firstName"
+                  :rules="required"
+                  tabindex="1"
+                />
+                <v-text-field
+                  outlined
+                  label="ID Number"
+                  v-model="employee.statutory.id"
+                  :rules="required"
+                  tabindex="3"
+                />
+                <v-text-field
+                  outlined
+                  label="Position"
+                  v-model="salary.position"
+                  :rules="required"
+                  tabindex="5"
+                />
               </v-col>
               <v-col>
-                <v-text-field outlined label="Last name" v-model="employee.personal.lastName" :rules="required" />
-                <v-text-field outlined label="Telephone" v-model="employee.personal.telephone" :rules="required" />
-                <v-text-field outlined label="Start date" v-model="employee.start" :rules="required" />
+                <v-text-field
+                  outlined
+                  label="Last name"
+                  v-model="employee.personal.lastName"
+                  :rules="required"
+                  tabindex="2"
+                />
+                <v-text-field
+                  outlined
+                  label="Telephone"
+                  v-model="employee.personal.telephone"
+                  :rules="required"
+                  tabindex="4"
+                />
+                <v-text-field
+                  outlined
+                  label="Start date"
+                  v-model="employee.start"
+                  :rules="required"
+                  tabindex="6"
+                />
               </v-col>
             </v-row>
-            <v-btn text class="mr-2">Cancel</v-btn>
+            <v-btn text class="mr-2" @click="cancelNewEmployee">Cancel</v-btn>
             <v-btn color="primary" type="submit">Next</v-btn>
           </v-form>
         </v-stepper-content>
         <v-stepper-step step="2"> Salary details </v-stepper-step>
         <v-stepper-content step="2">
-          <v-form ref="salaryForm" v-model="salaryFormValid" lazy-validation @submit.prevent="quickAdd">
+          <v-form
+            ref="salaryForm"
+            v-model="salaryFormValid"
+            lazy-validation
+            @submit.prevent="quickAdd"
+          >
             <v-row class="pa-4">
               <v-col>
-                <v-text-field outlined label="Basic salary" v-model="salary.basic" :rules="required" />
-                <v-row v-for="(allowance, index) in salary.allowances" :key="index">
+                <v-text-field
+                  outlined
+                  label="Basic salary"
+                  v-model="salary.basic"
+                  :rules="required"
+                />
+                <v-row
+                  v-for="(allowance, index) in salary.allowances"
+                  :key="index"
+                >
                   <v-col class="py-0">
                     <v-text-field
                       outlined
@@ -89,7 +146,9 @@
               </v-col>
             </v-row>
             <v-btn text @click="step--" class="mr-2">Back</v-btn>
-            <v-btn color="primary" @click="quickAdd">Save</v-btn>
+            <v-btn color="primary" @click="quickAdd" :loading="loadingQuickAdd"
+              >Save</v-btn
+            >
           </v-form>
         </v-stepper-content>
       </v-stepper>
@@ -98,12 +157,23 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from "vuex";
 export default {
-  mounted () {
-    this.getEmployees()
+  mounted() {
+    const allEmployees = this.$store.state.employees.allEmployees;
+    if (allEmployees.length == 0) this.getEmployees();
+    this.$store.commit("employees/RESET_EMPLOYEE");
   },
   data: () => ({
+    search: "",
+    headers: [
+      { text: "ID", value: "_id" },
+      { text: "Name", value: "personal.firstName" },
+      { text: "Position", value: "personal.firstName" },
+      { text: "Department", value: "personal.firstName" },
+      // { text: 'Leave days', value: 'personal.firstName' },
+      // { text: 'Overtime', value: 'personal.firstName' },
+    ],
     drawer: false,
     step: 1,
     employee: {
@@ -126,11 +196,25 @@ export default {
     salaryFormValid: true,
     required: [(v) => !!v || "Required"],
     employees: [],
+    loadingEmployees: false,
+    loadingQuickAdd: false,
   }),
+  computed: {
+    ...mapState({
+      allEmployees: (state) => state.employees.allEmployees,
+    }),
+  },
   methods: {
-    ...mapActions("employees", ["getAllEmployees", "quickAddEmployee"]),
-    async getEmployees () {
-      await this.getAllEmployees()
+    ...mapActions("employees", ["getAllActiveEmployees", "quickAddEmployee"]),
+    async getEmployees() {
+      this.loadingEmployees = true;
+      await this.getAllActiveEmployees();
+      this.loadingEmployees = false;
+    },
+    cancelNewEmployee() {
+      this.$refs.basicForm.reset();
+      this.$refs.salaryForm.reset();
+      this.drawer = false;
     },
     addAllowance() {
       this.salary.allowances.push({ name: "", amount: "" });
@@ -145,9 +229,34 @@ export default {
     },
     async quickAdd() {
       if (this.$refs.salaryForm.validate()) {
-        await this.quickAddEmployee({ employeeData: this.employee, salaryData: this.salary })
-        
+        this.loadingQuickAdd = true;
+        const id = await this.quickAddEmployee({
+          employeeData: this.employee,
+          salaryData: this.salary,
+        });
+        this.loadingQuickAdd = false;
+        (this.employee = {
+          personal: {
+            firstName: "",
+            lastName: "",
+            telephone: "",
+          },
+          statutory: {
+            id: "",
+          },
+          start: "",
+        }),
+          (this.salary = {
+            position: "",
+            basic: "",
+            allowances: [],
+          });
+        this.step = 1;
+        this.$router.push({ name: "employee", params: { id } });
       }
+    },
+    selectEmployee(employee) {
+      this.$router.push({ name: "employee", params: { id: employee._id } });
     },
   },
 };

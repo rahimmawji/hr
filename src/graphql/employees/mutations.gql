@@ -9,3 +9,9 @@ mutation createSalary ($salaryData: SalaryInput!) {
     _id
   }
 }
+
+mutation partialUpdateEmployee($id: ID!, $employeeData: PartialUpdateEmployeeInput!){
+  partialUpdateEmployee(id: $id, data: $employeeData){
+    _id
+  }
+}

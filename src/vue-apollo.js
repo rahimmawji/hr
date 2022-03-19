@@ -37,7 +37,7 @@ const defaultOptions = {
   // cache: myCache
 
   // Override the way the Authorization header is set
-  getAuth: () => "Basic Zm5BRWg5RUYybkFDU2RjU29jcEdEOUVkU1lBS2tLWFdUTUR5N2xDTzpocjphZG1pbg=="
+  getAuth: () => "Bearer fnAEh3lct0ACS4LcSUsvAU6XRJfY1RQkxtQRja15"
 
   // Additional ApolloClient options
   // apollo: { ... }
