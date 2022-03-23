@@ -235,3 +235,27 @@ CreateFunction({
     )
   )
 });
+
+CreateFunction({
+  name: "bulkInsertAdvance",
+  role: null,
+  body: Query(
+    Lambda(["bulkAdvances"],
+      Map(Var("bulkAdvances"), 
+        Lambda("item",
+          Create(
+            Collection("Advance"),
+            {
+              data: {
+                month: Select("month", Var("item")),
+                year: Select("year", Var("item")),
+                employee: Ref(Collection("Employee"), Select("employeeId", Var("item"))),
+                amount: ToDouble(Select("amount", Var("item")))
+              }
+            }
+          )
+        )
+      )
+    )
+  )
+});

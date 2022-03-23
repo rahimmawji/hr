@@ -1,4 +1,4 @@
-import { apolloClient } from "../vue-apollo";
+import { apolloClient } from "../vue-apollo"
 import { createEmployee, createSalary, partialUpdateEmployee } from '@/graphql/employees/mutations.gql'
 import { activeEmployees, findEmployeeByID } from '@/graphql/employees/queries.gql'
 

@@ -13,6 +13,7 @@ type Salary {
   position: String!
   basic: Float!
   allowances: [Allowance]
+  benefits: [Allowance]
   gross: Float!
   date: Date!
   active: Boolean!
@@ -40,12 +41,20 @@ type Loan {
   active: Boolean!
 }
 
+type Advance {
+  month: Int!
+  year: Int!
+  employee: Employee!
+  amount: Float!
+}
+
 type Employee {
   personal: PersonalDetail!
   statutory: StatutoryDetail!
   department: Department
   salary: Float!
   salaryHistory: [Salary!] @relation
+  advances: [Advance!] @relation
   bank: BankDetail
   start: Date!
   end: Date
@@ -92,6 +101,13 @@ type BankDetail @embedded {
   branchCode: String!
 }
 
+input AdvanceInput {
+  month: Int!
+  year: Int!
+  employeeId: String!
+  amount: Float!
+}
+
 type Query {
   allEmployees: [Employee!]
   activeEmployees(active: Boolean!): [Employee!]
@@ -101,5 +117,9 @@ type Query {
   activeLeaves(active: Boolean!): [Leave!]
   allLoans: [Loan!]
   activeLoans(active: Boolean!): [Loan!]
+  allSalaries: [Salary!]
+  activeSalaries(active: Boolean!): [Salary!]
   nextEmployeeNo: Int! @resolver(name: "getNextEmployeeNo")
+  advanceByMonthYear(month: Int!, year: Int!): [Advance]
+  createManyAdvances(advances: [AdvanceInput!]): [Advance!] @resolver(name: "bulkInsertAdvance")
 }

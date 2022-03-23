@@ -1,0 +1,14 @@
+query advanceByMonthYear($month: Int!, $year: Int!) {
+  advanceByMonthYear(month: $month, year: $year) {
+    data {
+      _id
+      employee {
+        personal {
+          firstName
+          lastName
+        }
+      }
+      amount
+    }
+  }
+}

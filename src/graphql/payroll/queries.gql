@@ -1,0 +1,19 @@
+query activeSalaries {
+  activeSalaries(active:true){
+    data{
+      employee{
+        _id
+        personal{
+          firstName
+          lastName
+        }
+      }
+      basic
+      allowances{
+        name
+        amount
+      }
+      gross
+    }
+  }
+}

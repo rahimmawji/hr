@@ -1,12 +1,13 @@
 import { EmployeeService } from "../../services/employees"
 import _ from "lodash"
-import { omitTypeName } from "../../../utils/omitTypeName";
-import { removeEmpty } from "../../../utils/removeEmpty";
+import { omitTypeName } from "../../utils/omitTypeName";
+import { removeEmpty } from "../../utils/removeEmpty";
 
 export default {
   namespaced: true,
   state: () => ({
     allEmployees: [],
+    advances: [],
     employee: {
       personal: {
         firstName: "",
@@ -51,6 +52,7 @@ export default {
     },
   }),
   getters: {
+    allEmployees: (state) => JSON.parse(JSON.stringify(state.allEmployees)),
     personal: (state) => JSON.parse(JSON.stringify(state.employee.personal)),
     statutory: (state) => JSON.parse(JSON.stringify(state.employee.statutory)),
     salary: (state) => JSON.parse(JSON.stringify(state.employee.salaryHistory.data)),
@@ -118,6 +120,9 @@ export default {
         loan: 0,
         loanHistory: []
       }
+    },
+    INSERT_EMPLOYEE_ADVANCE (state, {month, year, employeeId, amount}) {
+      state.advances.push({ month, year, employeeId, amount })
     }
     
   },
@@ -140,6 +145,9 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    async getAdvancesByMonthYear ({ commit }, { month, year }) {
+      
     },
     async quickAddEmployee({ commit }, { employeeData, salaryData }) {
       const gross =
